@@ -3,7 +3,7 @@
 #
 [board]
 # The board name
-name = "phytiumpi"
+name = "rk3568"
 # Architecture identifier.
 arch = "aarch64" 
 
@@ -12,16 +12,16 @@ arch = "aarch64"
 #
 [ostool]
 # The buad rate of serial console
-baud_rate = 115200
+baud_rate = 1500000
 # The serial console device
-serial = "/dev/ttyUSB1"
+serial = "/dev/ttyUSB3"
 # The path of axvisor image
-kernel = "path/axvisor_aarch64-phytiumpi.bin"
+kernel = "path/axvisor_aarch64-rk3568.bin"
 # The path of the device tree blob (DTB)
-dtb_file = "path/phytiumpi.dtb"
+dtb_file = "path/rk3568.dtb"
 
 #
 # Virtual Machine configuration
 #
 [vms]
-path = "../build/phytiumpi-linux/linux-qemu-aarch64.toml"
+path = "../build/rk3568-linux/linux-qemu-aarch64.toml"
