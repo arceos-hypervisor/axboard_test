@@ -24,4 +24,4 @@ dtb_file = "path/rk3568.dtb"
 # Virtual Machine configuration
 #
 [vms]
-path = "../build/rk3568-linux/linux-qemu-aarch64.toml"
+path = "config/build/rk3568-linux/linux-qemu-aarch64.toml"

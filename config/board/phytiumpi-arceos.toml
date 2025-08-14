@@ -24,4 +24,4 @@ dtb_file = "path/phytiumpi.dtb"
 # Virtual Machine configuration
 #
 [vms]
-path = "../build/phytiumpi-arceos/arceos-aarch64.toml"
+path = "config/build/phytiumpi-arceos/arceos-aarch64.toml"
