@@ -1,0 +1,9 @@
+#
+# board configuration file
+#
+# The serial console device
+serial = "/dev/ttyUSB0"
+# The buad rate of serial console
+baudrate = 115200
+# The path of the device tree blob (DTB)
+dtb_file = "axvisor_phytiumpi.dtb"
