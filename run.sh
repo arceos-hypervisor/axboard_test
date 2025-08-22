@@ -8,13 +8,14 @@ for dir in config/*; do
     # 检查文件是否存在
     if [ -d "$dir" ]; then
         echo "start test : $dir"
-        # 1. 把 |内核启动配置文件| 和 |board配置文件| 发送给 ostool
-        # send .project.toml and board_[plat]_[guestos].toml to ostool
+        # 1. 把 |内核启动配置文件| 和 |平台配置文件| 发送给 ostool
+        # send .project.toml and .project.toml to ostool
+        # 把 .project.toml 放在axvisor根目录下
         cp "$dir/.project.toml" ../
-        # TODO: send board_[plat]_[guestos].toml to ostool
-
+        cp "$dir/.board.toml" ../
         # 2. 等待上电，执行测例
-        cd ../ & ostool run uboot
+        cd ../
+        ostool board-test
         sleep 5
 
         # 发送对应门路的上电指令 A0(起始标识) 01(第一路) 01(上电) A2(校验码)
@@ -26,9 +27,10 @@ for dir in config/*; do
         echo -n -e "$power_on_cmd" > $serial_port
 
         # 3. 检查结果，检查是否超时
-        timeout=300  # 设置超时时间为300秒
+        timeout=300
+        # todo: check result
 
-        # 4. 重置，发送下电指令
+        # 4.发送下电指令，重置
         # 发送对应门路的下电指令 A0(起始标识) 01(第一路) 00(下电) A1(校验码)
         check_code=$((0xA0 + serial_id))
         power_off_cmd=$(printf "A0%02X00%X" "$serial_id" "$check_code")
@@ -37,7 +39,7 @@ for dir in config/*; do
         echo -n -e "$power_off_cmd" > $serial_port
 
         ((serial_id++))
-        cd axboard_test/
+        cd ./axboard_test
 
         echo "test passed: $dir"
         echo

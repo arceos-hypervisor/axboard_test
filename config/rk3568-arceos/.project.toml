@@ -2,13 +2,13 @@
 target = "aarch64-unknown-none"
 
 [compile.build.Custom]
-# 编译命令，可多条
-shell = ["make ARCH=aarch64 A=examples/helloworld FEATURES=page-alloc-4g"]
-# 要启动的内核
-kernel = "examples/helloworld/helloworld_aarch64-qemu-virt.bin"
+shell = ['./task.py build --plat aarch64-generic --arceos-args "LOG=info,SMP=4,ACCEL=n" --vmconfigs "axboard_test/config/rk3568-arceos/arceos-aarch64-rk3568_smp1.toml"']
+kernel = "axvisor_aarch64-generic.bin"
 
 [qemu]
 machine = "virt"
 cpu = "cortex-a57"
 graphic = false
 args = ""
+
+include = ["./.board.toml"]

@@ -23,7 +23,7 @@ axboard_test 是在本地服务器搭建的测试环境，本地服务器与 Git
 
 ## How to use
 
-`temple.toml` 是平台相关的配置文件模板，在config的各平台中，根据实际环境配置平台相关的信息
+`temple.toml` 是平台相关的配置文件模板，在config的各平台中，根据实际环境配置平台相关的信息，并更名为 `.board.toml`
 
 在 test.yml 调用 run.sh 脚本，脚本中遍历各个测试设备，执行测试，并将结果同步到 Github Action 中。
 
