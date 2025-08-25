@@ -15,28 +15,32 @@ for dir in config/*; do
         cp "$dir/.board.toml" ../
         # 2. 等待上电，执行测例
         cd ../
-        ostool board-test
-        sleep 5
+        ostool board-test &
+        ostool_pid=$!
+        sleep 20
 
         # 发送对应门路的上电指令 A0(起始标识) 01(第一路) 01(上电) A2(校验码)
-        check_code=$((0xA0 + serial_id + 0x01))
-        power_on_cmd=$(printf "A0%02X01%X" "$serial_id" "$check_code")
-        echo "power on command: $power_on_cmd"
+        serial_hex=$(printf "%02X" "$serial_id")
+        device="/dev/ttyACM$((serial_id-1))"
+        stty -F "$device" 115200 cs8 -cstopb -parenb raw -echo -echoe -echok
 
-        serial_port="/dev/ttyUSB$((serial_id-1))"
-        echo -n -e "$power_on_cmd" > $serial_port
+        up_check_code=$(printf '%02X' $((0xA0 + $serial_hex + 0x01)))
+        up_data="A0 $serial_hex 01 $up_check_code"
+        echo "power on command: $up_data"
+        echo -n $up_data | xxd -r -p > $device
 
+        sleep 30
         # 3. 检查结果，检查是否超时
-        timeout=300
         # todo: check result
 
         # 4.发送下电指令，重置
         # 发送对应门路的下电指令 A0(起始标识) 01(第一路) 00(下电) A1(校验码)
-        check_code=$((0xA0 + serial_id))
-        power_off_cmd=$(printf "A0%02X00%X" "$serial_id" "$check_code")
+        down_check_code=$(printf '%02X' $((0xA0 + $serial_hex + 0x00)))
+        down_data="A0 $serial_hex 00 $down_check_code"
         echo "power off command: $power_off_cmd"
-
-        echo -n -e "$power_off_cmd" > $serial_port
+        echo -n $down_data | xxd -r -p > $device
+        # 关闭ostool
+        kill $ostool_pid
 
         ((serial_id++))
         cd ./axboard_test
