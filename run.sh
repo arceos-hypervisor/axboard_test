@@ -1,4 +1,5 @@
 #!/bin/bash
+
 serial_id=1
 device="/dev/ttyACM0"
 logfile="log.txt"
@@ -9,11 +10,12 @@ send_config() {
     # send .project.toml and .board.toml to ostool
     cp "$dir/.project.toml" ../
     cp "$dir/.board.toml" ../
+    cd ../
 }
 
 start_ostool() {
-    cd ../
     source ./activate.sh
+    echo "[Info] Start ostool..."
     ostool board-test | tee $logfile &
     ostool_pid=$!
 }
@@ -25,88 +27,90 @@ power_on() {
 
     up_check_code=$(printf '%02X' $((0xA0 + $serial_hex + 0x01)))
     up_data="A0 $serial_hex 01 $up_check_code"
-    echo "send power on command: $up_data"
+    echo "[Info] send power on command: $up_data"
     echo -n $up_data | xxd -r -p > $device
-    echo "Powered on!"
+    echo "[Info] Powered on!"
 }
 
 power_off() {
     # 发送对应门路的下电指令 A0(起始标识) 01(第一路) 00(下电) A1(校验码)
     down_check_code=$(printf '%02X' $((0xA0 + $serial_hex + 0x00)))
     down_data="A0 $serial_hex 00 $down_check_code"
-    echo "send power off command: $down_data"
+    echo "[Info] send power off command: $down_data"
     echo -n $down_data | xxd -r -p > $device
-    echo "Powered off!"
+    echo "[Info] Powered off!"
 }
 
 reset() {
     # 关闭ostool
-    echo "reset..."
+    echo "[Info] Reset..."
     kill $ostool_pid
     deactivate
     cargo clean
+    rm -rf $logfile
     cd ./axboard_test
 }
 
 test_failed() {
-    echo "Test failed: $dir"
+    echo "[Info] Test failed: $dir"
     power_off
     reset
     exit 1
 }
 
 check_result() {
+    echo "[Info] Checking test result..."
     # 检查log.txt中是否有"Test passed"字样
     if grep -q "Test passed" log.txt; then
-        echo "Test passed: $dir"
+        echo "[Info] Test passed: $dir"
     else
         test_failed
     fi
 }
 
 ostool_timeout_check() {
-    elapsed=0
-    while (( elapsed < max_ostool_time )); do
+    ostool_elapsed=0
+    while (( ostool_elapsed < max_ostool_time )); do
         sleep 1
-        if grep -qF ""等待 U-Boot 启动"" "$logfile"; then
-            echo "The keyword has been detected, Continue."
+        if grep -qF ""等待 U-Boot 启动"" "$logfile" 2>/dev/null; then
+            echo "[Info] The keyword has been detected, Continue."
             break
         fi
-        ((elapsed++))
+        ((ostool_elapsed++))
     done
 
     # 判断是否因超时跳出
-    if (( elapsed >= max_ostool_time )); then
-        echo "The keyword was not detected during the timeout and was redirected to reset."
+    if (( ostool_elapsed >= max_ostool_time )); then
+        echo "[Error] The keyword was not detected during the timeout and was redirected to reset."
         reset
         exit 1
     fi
 }
 
 test_timeout_check() {
-    elapsed=0
-    while (( elapsed < max_test_time )); do
+    test_elapsed=0
+    while (( test_elapsed < max_test_time )); do
         sleep 1
-        if grep -qF "Test passed" "$logfile"; then
-            echo "Test passed, Prepare to close."
+        if grep -qF "Test passed" "$logfile" 2>/dev/null; then
+            echo "[Info] Test passed, Prepare to close."
             break
         fi
-        ((elapsed++))
+        ((test_elapsed++))
     done
 
     # 判断是否因超时跳出
-    if (( elapsed >= max_test_time )); then
-        echo "The keyword was not detected during the timeout and was redirected to test_failed."
+    if (( test_elapsed >= max_test_time )); then
+        echo "[Error] The keyword was not detected during the timeout and was redirected to test_failed."
         test_failed
     fi
 }
 
-echo "start testing..."
+echo "[Info] Start testing..."
 ## 遍历 config 下的所有目录
 for dir in config/*; do
     # 检查文件是否存在
-    if [ -d "$dir" ]; then
-        echo "start test : $dir"
+    if [[ -d "$dir" ]]; then
+        echo "[Info] Start test : $dir"
         # 1. 把 |内核启动配置文件| 和 |平台配置文件| 发送给 ostool
         send_config
 
@@ -125,12 +129,12 @@ for dir in config/*; do
         reset
         ((serial_id++))
 
-        echo "Test passed: $dir"
+        echo "[Info] Test passed: $dir"
         echo
     else
-        echo "Error: dir not found: $dir"
+        echo "[Error] Dir not found: $dir"
         exit 1
     fi
 done
 
-echo "all tests completed."
+echo "[Info] All tests completed."
