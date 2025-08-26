@@ -32,24 +32,20 @@ axboard_test 是在本地服务器搭建的测试环境，本地服务器与 Git
 ```
 .
 ├── config
-│   ├── phytiumpi-arceos
-│   │   ├── arceos.bin								# 客户机镜像文件
-│   │   ├── board_phytiumpi_arceos.toml				# 硬件平台配置项 (根据 temple.toml 新建)
-│   │   └── vm_phytiumpi-arceos.toml				# 客户机配置文件
-│   ├── phytiumpi-linux
-│   │   ├── board_phytiumpi_linux.toml
-│   │   ├── Image
-│   │   ├── phytiumpi-linux.dtb
-│   │   └── vm_phytiumpi-linux.toml
 │   ├── rk3568-arceos
-│   │   ├── arceos.bin
-│   │   ├── board_rk3568_arceos.toml
-│   │   └── vm_rk3568-aarch64.toml
-│   └── rk3568-linux
-│       ├── board_rk3568_linux.toml
-│       ├── Image
-│       ├── rk3568-linux.dtb
-│       └── vm_rk3568-linux.toml
+│   │   ├── .project.toml				            # ostool配置项
+│   │   ├── .board.toml				                # 硬件平台配置项 (根据 temple.toml 新建)
+│   │   ├── arceos.bin								# 客户机镜像文件
+│   │   ├── arceos-rk3568.dtb					    # 客户机设备树文件
+│   │   ├── vm-rk3568-arceos.toml				    # 客户机配置文件
+│   |   └── rk3568.dtb							    # axvisor设备树文件
+│   └── phytiumpi-arceos (todo)
+│       ├── .project.toml
+│       ├── .board.toml
+│       ├── arceos.bin
+│       ├── arceos-phytiumpi.dtb
+│       ├── vm-phytiumpi-arceos.toml
+│       └── phytiumpi.dtb
 ├── img
 │   └── board_test.png
 ├── README.md
@@ -57,6 +53,9 @@ axboard_test 是在本地服务器搭建的测试环境，本地服务器与 Git
 └── temple.toml										# 硬件平台配置模板
 ```
 
+## 注意
+1. `vm-rk3568-arceos.toml` 是客户机配置文件，其中 `kernel_path` 和 `dtb_path` 配置绝对路径
+2. 启动脚本run.sh, `device` 为继电器的端口，若更改测试环境，将 `device` 修改为继电器实际对应的端口
 
 ## More
 https://github.com/orgs/arceos-hypervisor/discussions/217
