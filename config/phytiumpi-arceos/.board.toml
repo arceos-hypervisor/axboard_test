@@ -6,4 +6,4 @@ serial = "/dev/ttyUSB0"
 # The buad rate of serial console
 baud_rate = 115200
 # The path of the device tree blob (DTB)
-dtb_file = "/home/runner/work/axvisor_test/axvisor_test/axboard_test/config/phytiumpi-arceos/e2000.dtb"
+dtb_file = "/home/runner/_work/axvisor_test/axboard_test/config/phytiumpi-arceos/e2000.dtb"

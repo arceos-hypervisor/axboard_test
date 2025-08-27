@@ -26,9 +26,9 @@ image_location = "memory"
 # The load address of the kernel image.
 kernel_load_addr = 0x20_2008_0000
 ## The file path of the kernel image.
-kernel_path = "/home/runner/work/axvisor_test/axvisor_test/axboard_test/config/phytiumpi-arceos/arceos.bin"
+kernel_path = "/home/runner/_work/axvisor_test/axboard_test/config/phytiumpi-arceos/arceos.bin"
 ## The file path of the device tree blob (DTB).
-dtb_path = "/home/runner/work/axvisor_test/axvisor_test/axboard_test/config/phytiumpi-arceos/arceos-e2000.dtb"
+dtb_path = "/home/runner/_work/axvisor_test/axboard_test/config/phytiumpi-arceos/arceos-e2000.dtb"
 dtb_load_addr = 0x20_2000_0000
 # Memory regions with format (`base_paddr`, `size`, `flags`, `map_type`).
 # For `map_type`, 0 means `MAP_ALLOC`, 1 means `MAP_IDENTICAL`.
