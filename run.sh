@@ -11,6 +11,8 @@ send_config() {
     cp "$dir/.project.toml" ../
     cp "$dir/.board.toml" ../
     cd ../
+    cargo clean
+    ./task.py clean
 }
 
 start_ostool() {
@@ -44,9 +46,8 @@ power_off() {
 reset() {
     # 关闭ostool
     echo "[Info] Reset..."
-    kill $ostool_pid
     deactivate
-    cargo clean
+    kill $ostool_pid
     rm -rf $logfile
     cd ./axboard_test
 }
@@ -105,6 +106,7 @@ test_timeout_check() {
     fi
 }
 
+cargo install ostool
 echo "[Info] Start testing..."
 ## 遍历 config 下的所有目录
 for dir in config/*; do
