@@ -106,7 +106,6 @@ test_timeout_check() {
     fi
 }
 
-cargo install ostool
 echo "[Info] Start testing..."
 ## 遍历 config 下的所有目录
 for dir in config/*; do
