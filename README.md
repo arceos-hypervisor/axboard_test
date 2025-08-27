@@ -11,9 +11,9 @@ axboard_test 是在本地服务器搭建的测试环境，本地服务器与 Git
 
 ### aarch64
 
-- [ ] Phytium-pi
+- [x] Phytium-pi
+- [x] Rockchip RK3568
 - [ ] Raspi
-- [ ] Rockchip RK3568 
 
 ### riscv64
 
@@ -31,26 +31,26 @@ axboard_test 是在本地服务器搭建的测试环境，本地服务器与 Git
 
 ```
 .
+├── README.md
 ├── config
-│   ├── rk3568-arceos
+│   ├── phytiumpi-arceos
 │   │   ├── .project.toml				            # ostool配置项
 │   │   ├── .board.toml				                # 硬件平台配置项 (根据 temple.toml 新建)
-│   │   ├── arceos.bin								# 客户机镜像文件
-│   │   ├── arceos-rk3568.dtb					    # 客户机设备树文件
-│   │   ├── vm-rk3568-arceos.toml				    # 客户机配置文件
-│   |   └── rk3568.dtb							    # axvisor设备树文件
-│   └── phytiumpi-arceos (todo)
+│   │   ├── arceos-e2000.dtb                        # 客户机设备树文件
+│   │   ├── arceos.bin                              # 客户机镜像文件
+│   │   ├── e2000.dtb                               # axvisor平台设备树文件
+│   │   └── vm-arceos-phytiumpi.toml                # 客户机配置文件
+│   └── rk3568-arceos
 │       ├── .project.toml
 │       ├── .board.toml
+│       ├── arceos-rk3568.dtb
 │       ├── arceos.bin
-│       ├── arceos-phytiumpi.dtb
-│       ├── vm-phytiumpi-arceos.toml
-│       └── phytiumpi.dtb
+│       ├── rk3568.dtb
+│       └── vm-arceos-rk3568.toml
 ├── img
 │   └── board_test.png
-├── README.md
-├── run.sh											# 启动脚本
-└── temple.toml										# 硬件平台配置模板
+├── run.sh                                          # 启动脚本
+└── temple.toml                                     # 硬件平台配置模板
 ```
 
 ## 注意

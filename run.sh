@@ -3,7 +3,7 @@
 serial_id=1
 device="/dev/ttyACM0"
 logfile="log.txt"
-max_ostool_time=120
+max_ostool_time=180
 max_test_time=300
 
 send_config() {
