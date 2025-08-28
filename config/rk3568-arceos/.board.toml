@@ -1,9 +1,0 @@
-#
-# board configuration file
-#
-# The serial console device
-serial = "/dev/ttyUSB1"
-# The buad rate of serial console
-baud_rate = 1500000
-# The path of the device tree blob (DTB)
-dtb_file = "/code/arceos/tools/rk3568/rk3568-firefly-roc-pc-se.dtb"
