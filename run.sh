@@ -46,7 +46,7 @@ power_off() {
 reset() {
     # 关闭ostool
     echo "[Info] Reset..."
-    deactivate
+    # deactivate 新版axvisor都需要venv环境，不关闭也行
     kill $ostool_pid
     rm -rf $logfile
     cd ./axboard_test
@@ -76,13 +76,16 @@ ostool_timeout_check() {
         if grep -qF ""等待 U-Boot 启动"" "$logfile" 2>/dev/null; then
             echo "[Info] The keyword has been detected, Continue."
             break
+        elif grep -qF "panic" "$logfile" 2>/dev/null; then
+            echo "[Error] 'panic' detected."
+            test_failed
         fi
         ((ostool_elapsed++))
     done
 
     # 判断是否因超时跳出
     if (( ostool_elapsed >= max_ostool_time )); then
-        echo "[Error] The keyword was not detected during the timeout and was redirected to reset."
+        echo "[Error] Run timeout and redirect to exit."
         reset
         exit 1
     fi
@@ -101,7 +104,7 @@ test_timeout_check() {
 
     # 判断是否因超时跳出
     if (( test_elapsed >= max_test_time )); then
-        echo "[Error] The keyword was not detected during the timeout and was redirected to test_failed."
+        echo "[Error] Run timeout and redirect to test_failed."
         test_failed
     fi
 }
@@ -128,6 +131,7 @@ for dir in config/*; do
         # 4.发送下电指令，重置
         power_off
         reset
+
         ((serial_id++))
 
         echo "[Info] Test passed: $dir"
