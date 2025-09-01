@@ -2,7 +2,7 @@
 # board configuration file
 #
 # The serial console device
-serial = "/dev/ttyUSB0"
+serial = "/dev/ttyUSB1"
 # The buad rate of serial console
 baud_rate = 115200
 # The path of the device tree blob (DTB)
