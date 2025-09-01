@@ -121,6 +121,7 @@ for dir in config/*; do
         # 2. 启动ostool，上电运行测例
         start_ostool
         ostool_timeout_check
+        sleep 1
 
         power_on
         test_timeout_check
