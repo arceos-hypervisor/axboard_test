@@ -4,7 +4,7 @@ serial_id=3
 device="/dev/ttyACM0"
 logfile="log.txt"
 max_ostool_time=180
-max_test_time=300
+max_test_time=180
 
 send_config() {
     # send .project.toml and .board.toml to ostool
