@@ -6,4 +6,4 @@ serial = "/dev/ttyUSB0"
 # The buad rate of serial console
 baud_rate = 1500000
 # The path of the device tree blob (DTB)
-dtb_file = "/home/runner/_work/axvisor_test/axvisor_test/axboard_test/config/rk3568-arceos/rk3568.dtb"
+dtb_file = "/home/runner/_work/axvisor/axvisor/axboard_test/config/rk3568-arceos/rk3568.dtb"
