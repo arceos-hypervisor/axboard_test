@@ -1,6 +1,6 @@
 #!/bin/bash
 
-serial_id=1
+serial_id=3
 device="/dev/ttyACM0"
 logfile="log.txt"
 max_ostool_time=180
