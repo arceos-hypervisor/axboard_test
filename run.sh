@@ -48,7 +48,7 @@ reset() {
     echo "[Info] Reset..."
     # deactivate 新版axvisor都需要venv环境，不关闭也行
     kill $ostool_pid
-    rm -rf $logfile
+    rm -rf $logfile .project.toml .board.toml .hvconfig
     cd ./axboard_test
 }
 
