@@ -27,7 +27,7 @@ power_on() {
     serial_hex=$(printf "%02X" "$serial_id")
     stty -F "$device" 115200 cs8 -cstopb -parenb raw -echo -echoe -echok
 
-    up_check_code=$(printf '%02X' $((0xA0 + $serial_hex + 0x01)))
+    up_check_code=$(printf '%02X' $((0xA0 + 16#$serial_hex + 0x01)))
     up_data="A0 $serial_hex 01 $up_check_code"
     echo "[Info] send power on command: $up_data"
     echo -n $up_data | xxd -r -p > $device
