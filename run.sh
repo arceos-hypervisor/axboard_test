@@ -1,6 +1,7 @@
 #!/bin/bash
 
 serial_id=7
+plat=$1
 device="/dev/ttyACM0"
 logfile="log.txt"
 max_ostool_time=180
@@ -8,8 +9,8 @@ max_test_time=180
 
 send_config() {
     # send .project.toml and .board.toml to ostool
-    cp "$dir/.project.toml" ../
-    cp "$dir/.board.toml" ../
+    cp "config/$plat/.project.toml" ../
+    cp "config/$plat/.board.toml" ../
     cd ../
     cargo clean
     ./task.py clean
@@ -24,6 +25,14 @@ start_ostool() {
 
 power_on() {
     # 发送对应门路的上电指令 A0(起始标识) 01(第一路) 01(上电) A2(校验码)
+    if [[ "$plat" == "phytiumpi-arceos" ]]; then
+        serial_id=2
+    elif [[ "$plat" == "rk3568-arceos" ]]; then
+        serial_id=4
+    else
+        echo "[Error] Unknown platform: $plat"
+        exit 1
+    fi
     serial_hex=$(printf "%02X" "$serial_id")
     stty -F "$device" 115200 cs8 -cstopb -parenb raw -echo -echoe -echok
 
@@ -36,7 +45,7 @@ power_on() {
 
 power_off() {
     # 发送对应门路的下电指令 A0(起始标识) 01(第一路) 00(下电) A1(校验码)
-    down_check_code=$(printf '%02X' $((0xA0 + $serial_hex + 0x00)))
+    down_check_code=$(printf '%02X' $((0xA0 + 16#$serial_hex + 0x00)))
     down_data="A0 $serial_hex 00 $down_check_code"
     echo "[Info] send power off command: $down_data"
     echo -n $down_data | xxd -r -p > $device
@@ -48,7 +57,7 @@ reset() {
     echo "[Info] Reset..."
     # deactivate 新版axvisor都需要venv环境，不关闭也行
     kill $ostool_pid
-    rm -rf $logfile .project.toml .board.toml .hvconfig
+    rm -rf $logfile .project.toml .board.toml .hvconfig .axconfig.toml
     cd ./axboard_test
 }
 
@@ -76,7 +85,7 @@ ostool_timeout_check() {
         if grep -qF ""等待 U-Boot 启动"" "$logfile" 2>/dev/null; then
             echo "[Info] The keyword has been detected, Continue."
             break
-        elif grep -qF "panic" "$logfile" 2>/dev/null; then
+            elif grep -qF "panic" "$logfile" 2>/dev/null; then
             echo "[Error] 'panic' detected."
             test_failed
         fi
@@ -109,38 +118,34 @@ test_timeout_check() {
     fi
 }
 
-echo "[Info] Start testing..."
-## 遍历 config 下的所有目录
-for dir in config/*; do
-    # 检查文件是否存在
-    if [[ -d "$dir" ]]; then
-        echo "[Info] Start test : $dir"
-        # 1. 把 |内核启动配置文件| 和 |平台配置文件| 发送给 ostool
-        send_config
+main () {
+    echo "[Info] Start testing..."
 
-        # 2. 启动ostool，上电运行测例
-        start_ostool
-        ostool_timeout_check
-        sleep 1
+    echo "[Info] Start test : $plat"
+    # 1. 把 |内核启动配置文件| 和 |平台配置文件| 发送给 ostool
+    send_config
 
-        power_on
-        test_timeout_check
+    # 2. 启动ostool，上电运行测例
+    start_ostool
+    ostool_timeout_check
+    sleep 1
 
-        # 3. 检查结果，检查是否超时
-        check_result
+    power_on
+    test_timeout_check
 
-        # 4.发送下电指令，重置
-        power_off
-        reset
+    # 3. 检查结果，检查是否超时
+    check_result
 
-        ((serial_id++))
+    # 4.发送下电指令，重置
+    power_off
+    reset
 
-        echo "[Info] Test passed: $dir"
-        echo
-    else
-        echo "[Error] Dir not found: $dir"
-        exit 1
-    fi
-done
+    ((serial_id++))
 
-echo "[Info] All tests completed."
+    echo "[Info] Test passed: $dir"
+    echo
+
+    echo "[Info] All tests completed."
+}
+
+main
