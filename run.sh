@@ -62,7 +62,7 @@ reset() {
 }
 
 test_failed() {
-    echo "[Info] Test failed: $dir"
+    echo "[Info] Test failed: $plat"
     power_off
     reset
     exit 1
@@ -72,7 +72,7 @@ check_result() {
     echo "[Info] Checking test result..."
     # 检查log.txt中是否有"Test passed"字样
     if grep -q "Test passed" log.txt; then
-        echo "[Info] Test passed: $dir"
+        echo "[Info] Test passed: $plat"
     else
         test_failed
     fi
@@ -142,7 +142,7 @@ main () {
 
     ((serial_id++))
 
-    echo "[Info] Test passed: $dir"
+    echo "[Info] Test passed: $plat"
     echo
 
     echo "[Info] All tests completed."
