@@ -17,7 +17,11 @@ send_config() {
 }
 
 start_ostool() {
-    source ./activate.sh
+    if ! command -v ostool &> /dev/null; then
+        cargo install ostool
+    else
+        echo "ostool already installed, skipping..."
+    fi
     echo "[Info] Start ostool..."
     ostool board-test | tee $logfile &
     ostool_pid=$!
