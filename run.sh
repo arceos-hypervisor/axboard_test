@@ -125,8 +125,8 @@ main () {
     # 2. 启动ostool，上电运行测例
     start_ostool
     ostool_timeout_check
-    sleep 1
 
+    sleep 3
     power_on
     test_timeout_check
 
