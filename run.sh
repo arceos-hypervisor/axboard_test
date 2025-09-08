@@ -3,6 +3,9 @@
 serial_id=7
 plat=$1
 device="/dev/ttyACM0"
+baud_rate=115200
+power_on=1
+power_off=0
 logfile="log.txt"
 max_ostool_time=180
 max_test_time=180
@@ -28,31 +31,21 @@ start_ostool() {
 }
 
 power_on() {
-    # 发送对应门路的上电指令 A0(起始标识) 01(第一路) 01(上电) A2(校验码)
     if [[ "$plat" == "phytiumpi-arceos" ]]; then
-        serial_id=2
+        serial_id=0
     elif [[ "$plat" == "rk3568-arceos" ]]; then
-        serial_id=4
+        serial_id=1
     else
         echo "[Error] Unknown platform: $plat"
         exit 1
     fi
-    serial_hex=$(printf "%02X" "$serial_id")
-    stty -F "$device" 115200 cs8 -cstopb -parenb raw -echo -echoe -echok
 
-    up_check_code=$(printf '%02X' $((0xA0 + 16#$serial_hex + 0x01)))
-    up_data="A0 $serial_hex 01 $up_check_code"
-    echo "[Info] send power on command: $up_data"
-    echo -n $up_data | xxd -r -p > $device
+    mbpoll -a 1 -t 4 -o $plat -c $power_on -r 1 -d /dev/ttyACM0 -b $baud_rate
     echo "[Info] Powered on!"
 }
 
 power_off() {
-    # 发送对应门路的下电指令 A0(起始标识) 01(第一路) 00(下电) A1(校验码)
-    down_check_code=$(printf '%02X' $((0xA0 + 16#$serial_hex + 0x00)))
-    down_data="A0 $serial_hex 00 $down_check_code"
-    echo "[Info] send power off command: $down_data"
-    echo -n $down_data | xxd -r -p > $device
+    mbpoll -a 1 -t 4 -o $plat -c $power_off -r 1 -d /dev/ttyACM0 -b $baud_rate
     echo "[Info] Powered off!"
 }
 
