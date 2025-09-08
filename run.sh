@@ -7,7 +7,7 @@ baud_rate=9600
 power_on=1
 power_off=0
 logfile="log.txt"
-max_ostool_time=180
+max_ostool_time=300
 max_test_time=180
 
 send_config() {
