@@ -2,7 +2,7 @@
 
 serial_id=7
 plat=$1
-device="/dev/ttyACM0"
+device="/dev/ttyUSB0"
 baud_rate=9600
 power_on=1
 power_off=0
@@ -32,20 +32,20 @@ start_ostool() {
 
 power_on() {
     if [[ "$plat" == "phytiumpi-arceos" ]]; then
-        serial_id=0
+        serial_id=6
     elif [[ "$plat" == "rk3568-arceos" ]]; then
-        serial_id=1
+        serial_id=5
     else
         echo "[Error] Unknown platform: $plat"
         exit 1
     fi
 
-    mbpoll -a 1 -t 4 -o $plat -c $power_on -r 1 -d /dev/ttyACM0 -b $baud_rate
+    mbpoll -m rtu -a 1 -r $serial_id -t 0 -b $baud_rate -P none -v $device $power_on
     echo "[Info] Powered on!"
 }
 
 power_off() {
-    mbpoll -a 1 -t 4 -o $plat -c $power_off -r 1 -d /dev/ttyACM0 -b $baud_rate
+    mbpoll -m rtu -a 1 -r $serial_id -t 0 -b $baud_rate -P none -v $device $power_off
     echo "[Info] Powered off!"
 }
 

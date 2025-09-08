@@ -2,7 +2,7 @@
 target = "aarch64-unknown-none"
 
 [compile.build.Custom]
-shell = ['./task.py build --plat aarch64-generic --arceos-args "LOG=info,SMP=4" --vmconfigs "axboard_test/config/phytiumpi-arceos/vm-arceos-phytiumpi.toml"']
+shell = ['./axvisor.sh build --plat aarch64-generic --arceos-args "LOG=info,SMP=4" --vmconfigs "axboard_test/config/phytiumpi-arceos/vm-arceos-phytiumpi.toml"']
 kernel = "axvisor_aarch64-generic.bin"
 
 [qemu]
