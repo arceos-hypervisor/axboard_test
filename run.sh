@@ -3,7 +3,7 @@
 serial_id=7
 plat=$1
 device="/dev/ttyACM0"
-baud_rate=115200
+baud_rate=9600
 power_on=1
 power_off=0
 logfile="log.txt"
