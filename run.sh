@@ -38,12 +38,13 @@ power_on() {
         echo "[Error] Unknown platform: $plat"
         exit 1
     fi
-
+    # 通过mbpoll工具发送modbus协议的上电指令
     mbpoll -m rtu -a 1 -r $serial_id -t 0 -b $baud_rate -P none -v $device $power_on
     echo "[Info] Powered on!"
 }
 
 power_off() {
+    # 通过mbpoll工具发送modbus协议的下电指令
     mbpoll -m rtu -a 1 -r $serial_id -t 0 -b $baud_rate -P none -v $device $power_off
     echo "[Info] Powered off!"
 }
@@ -51,7 +52,6 @@ power_off() {
 reset() {
     # 关闭ostool
     echo "[Info] Reset..."
-    # deactivate 新版axvisor都需要venv环境，不关闭也行
     kill $ostool_pid
     rm -rf $logfile .project.toml .board.toml .hvconfig .axconfig.toml
     cd ./axboard_test
@@ -81,9 +81,6 @@ ostool_timeout_check() {
         if grep -qF ""等待 U-Boot 启动"" "$logfile" 2>/dev/null; then
             echo "[Info] The keyword has been detected, Continue."
             break
-        elif grep -Eiq 'panic|paniced' "$logfile" 2>/dev/null; then
-            echo "[Error] 'panic' detected."
-            test_failed
         fi
         ((ostool_elapsed++))
     done
@@ -103,6 +100,9 @@ test_timeout_check() {
         if grep -qF "Test passed" "$logfile" 2>/dev/null; then
             echo "[Info] Test passed, Prepare to close."
             break
+        elif grep -Eiq 'panic|paniced' "$logfile" 2>/dev/null; then
+            echo "[Error] 'panic' detected."
+            test_failed
         fi
         ((test_elapsed++))
     done

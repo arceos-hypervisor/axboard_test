@@ -32,14 +32,14 @@ dtb_path = "/home/runner/_work/axvisor/axvisor/axboard_test/config/rk3568-arceos
 dtb_load_addr = 0x7000_0000
 # Memory regions with format (`base_paddr`, `size`, `flags`, `map_type`).
 # For `map_type`, 0 means `MAP_ALLOC`, 1 means `MAP_IDENTICAL`.
-memory_regions = []
-
+memory_regions = [
+    [0x7000_0000, 0x1000_0000, 0x7, 0], # System RAM MAP_IDENTICAL
+]
 #
 # Device specifications
 #
 [devices]
 # Emu_devices.
-interrupt_mode = "passthrough"
 # Name Base-Ipa Ipa_len Alloc-Irq Emu-Type EmuConfig.
 emu_devices = []
 
