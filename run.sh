@@ -15,8 +15,7 @@ send_config() {
     cp "config/$plat/.project.toml" ../
     cp "config/$plat/.board.toml" ../
     cd ../
-    cargo clean
-    ./task.py clean
+    ./axvisor.sh clean
 }
 
 start_ostool() {
