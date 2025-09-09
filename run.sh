@@ -81,7 +81,7 @@ ostool_timeout_check() {
         if grep -qF ""等待 U-Boot 启动"" "$logfile" 2>/dev/null; then
             echo "[Info] The keyword has been detected, Continue."
             break
-            elif grep -qF "panic" "$logfile" 2>/dev/null; then
+        elif grep -Eiq 'panic|paniced' "$logfile" 2>/dev/null; then
             echo "[Error] 'panic' detected."
             test_failed
         fi
